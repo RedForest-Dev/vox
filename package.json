@@ -1,0 +1,15 @@
+{
+  "name": "vox-pwa",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "VOX — anonymous PWA chat with 4 modes",
+  "scripts": {
+    "install:all": "npm install --prefix server && npm install --prefix client",
+    "build": "npm run install:all && npm run build --prefix client",
+    "start": "npm run start --prefix server",
+    "typecheck": "npm run typecheck --prefix server && npm run typecheck --prefix client",
+    "dev:server": "npm run dev --prefix server",
+    "dev:client": "npm run dev --prefix client"
+  }
+}

@@ -139,6 +139,7 @@ app.get<{ Params: { slug: string } }>('/story/:slug', async (req, reply) => {
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="${esc(title)}">
 <meta name="twitter:description" content="${esc(description)}">
+<script defer src="https://cloud.umami.is/script.js" data-website-id="6b7622c1-3ec4-440f-8c0b-e11a3b9d6ea0"></script>
 <style>
 body{margin:0;background:#0B0F17;color:#e2e8f0;font-family:system-ui,sans-serif;display:flex;justify-content:center;padding:24px 12px}
 main{width:100%;max-width:640px}

@@ -30,7 +30,7 @@ export default defineConfig({
       },
       workbox: {
         // Server-rendered pages and API must never be answered by the app shell.
-        navigateFallbackDenylist: [/^\/api/, /^\/story/, /^\/socket\.io/],
+        navigateFallbackDenylist: [/^\/api/, /^\/story/, /^\/socket\.io/, /^\/sitemap\.xml$/, /^\/robots\.txt$/],
       },
     }),
   ],

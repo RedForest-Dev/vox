@@ -11,8 +11,10 @@ import { buildDescription, buildTitle, pickQuote } from './seo';
 import { registerSockets } from './socket';
 
 const PORT = Number(process.env.PORT) || 3001;
+// Canonical origin (no trailing slash). Override with SITE_URL when a custom domain is connected.
+const SITE_URL = (process.env.SITE_URL || 'https://vox-e06w.onrender.com').replace(/\/+$/, '');
 
-const app = Fastify({ logger: { level: 'info' } });
+const app = Fastify({ logger: { level: 'info' }, routerOptions: { ignoreTrailingSlash: true } });
 await app.register(cors, { origin: true });
 
 const io = new Server<ClientToServerEvents, ServerToClientEvents>(app.server, {
@@ -33,6 +35,21 @@ app.get<{ Params: { slug: string } }>('/api/stories/:slug', async (req, reply) =
   const story = storyRepository.get(req.params.slug);
   if (!story) return reply.code(404).send({ error: 'not_found' });
   return story;
+});
+
+// ------------------------------------------------- robots.txt & sitemap.xml
+app.get('/robots.txt', async (_req, reply) => {
+  reply
+    .type('text/plain; charset=utf-8')
+    .send(`User-agent: *\nAllow: /\nDisallow: /api/\nDisallow: /socket.io/\n\nSitemap: ${SITE_URL}/sitemap.xml\n`);
+});
+
+app.get('/sitemap.xml', async (_req, reply) => {
+  reply
+    .type('application/xml; charset=utf-8')
+    .send(
+      `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n  <url><loc>${SITE_URL}/</loc></url>\n</urlset>\n`,
+    );
 });
 
 // ------------------------------------------------- SEO page: /story/:slug
@@ -112,6 +129,8 @@ app.get<{ Params: { slug: string } }>('/story/:slug', async (req, reply) => {
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>${esc(title)}</title>
 <meta name="description" content="${esc(description)}">
+<link rel="canonical" href="${esc(`${SITE_URL}/story/${story.slug}`)}">
+<meta property="og:url" content="${esc(`${SITE_URL}/story/${story.slug}`)}">
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="VOX">
 <meta property="og:locale" content="${p.ogLocale}">
